@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/cigan43/hw02_fix_app/printer"
-	"github.com/cigan43/hw02_fix_app/reader"
-	"github.com/cigan43/hw02_fix_app/types"
+	"github.com/cigan43/home_work_basic/hw02_fix_app/printer"
+	"github.com/cigan43/home_work_basic/hw02_fix_app/reader"
+	"github.com/cigan43/home_work_basic/hw02_fix_app/types"
 )
 
 func main() {
