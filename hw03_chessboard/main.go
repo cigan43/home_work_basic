@@ -14,13 +14,17 @@ func CreateString(countColumn int, firstStep int) string {
 	for i := 0; i < countColumn; i++ {
 		if len(readyString)%2 == 0 && firstStep%2 == 0 {
 			readyString += black
+			continue
 		} else if len(readyString)%2 != 0 && firstStep%2 == 0 {
 			readyString += white
+			continue
 		}
 		if len(readyString)%2 == 0 && firstStep%2 != 0 {
 			readyString += white
+			continue
 		} else if len(readyString)%2 != 0 && firstStep%2 != 0 {
 			readyString += black
+			continue
 		}
 	}
 	return readyString
