@@ -2,6 +2,29 @@ package main
 
 import "fmt"
 
+const (
+	id FieldComapre = iota
+	title
+	author
+	year
+	size
+	rate
+)
+
+type FieldComapre uint8
+
+type Comparator struct {
+	Type FieldComapre
+}
+
+func NewComparator(t Comparator) *Comparator {
+	return &Comparator{
+		Type: t,
+	}
+}
+
+func (c Comparator) Compare(bookOne, bookTwo *Book) bool {}
+
 type Book struct {
 	id     uint
 	title  string
@@ -67,6 +90,24 @@ func (b *Book) GetAuthor() string {
 
 func (b *Book) GetId() uint {
 	return b.id
+}
+
+func (s FieldComapre) String() string {
+	switch s {
+	case id:
+		return "id"
+	case author:
+		return "author"
+	case title:
+		return "title"
+	case size:
+		return "size"
+	case rate:
+		return "rate"
+	case year:
+		return "year"
+	}
+	return "unknown"
 }
 
 func main() {
