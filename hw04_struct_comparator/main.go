@@ -1,12 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 const (
-	id FieldComapre = iota
-	title
-	author
-	year
+	year FieldComapre = iota
 	size
 	rate
 )
@@ -17,13 +17,24 @@ type Comparator struct {
 	Type FieldComapre
 }
 
-func NewComparator(t Comparator) *Comparator {
+func NewComparator(t FieldComapre) *Comparator {
 	return &Comparator{
 		Type: t,
 	}
 }
 
-func (c Comparator) Compare(bookOne, bookTwo *Book) bool {}
+func (c Comparator) Compare(bookOne, bookTwo *Book) bool {
+	switch c.Type {
+	case year:
+		return bookOne.year > bookTwo.year
+	case size:
+		return bookOne.size > bookTwo.size
+	case rate:
+		return bookOne.rate > bookTwo.rate
+	default:
+		return false
+	}
+}
 
 type Book struct {
 	id     uint
@@ -94,12 +105,6 @@ func (b *Book) GetId() uint {
 
 func (s FieldComapre) String() string {
 	switch s {
-	case id:
-		return "id"
-	case author:
-		return "author"
-	case title:
-		return "title"
 	case size:
 		return "size"
 	case rate:
@@ -112,6 +117,16 @@ func (s FieldComapre) String() string {
 
 func main() {
 	p := newBook(1, "Война и мир", "Толстой", 2020, 500, 5.8)
-	p.SetRate(6)
-	fmt.Println(p.rate)
+	p2 := newBook(2, "Сторожевая башня", "Стругадские", 2008, 300, 8)
+	var bookValue uint8
+	details := []FieldComapre{year, size, rate}
+	for bookIndex, bookType := range details {
+		fmt.Print("[", bookIndex, "] - ", bookType.String(), "\n")
+	}
+	fmt.Fscanln(os.Stdin, &bookValue)
+	fmt.Println(bookValue)
+	fmt.Println("Вы выбрали:", details[bookValue])
+	comparator := NewComparator(details[bookValue])
+	result := comparator.Compare
+	fmt.Println(result(p, p2))
 }
