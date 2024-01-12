@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 )
 
 const (
@@ -87,6 +86,7 @@ func (b *Book) GetRate() float32 {
 func (b *Book) GetSize() int {
 	return b.size
 }
+
 func (b *Book) GetYear() int {
 	return b.year
 }
@@ -116,17 +116,23 @@ func (s FieldComapre) String() string {
 }
 
 func main() {
-	p := newBook(1, "Война и мир", "Толстой", 2020, 500, 5.8)
-	p2 := newBook(2, "Сторожевая башня", "Стругадские", 2008, 300, 8)
-	var bookValue uint8
-	details := []FieldComapre{year, size, rate}
-	for bookIndex, bookType := range details {
-		fmt.Print("[", bookIndex, "] - ", bookType.String(), "\n")
-	}
-	fmt.Fscanln(os.Stdin, &bookValue)
-	fmt.Println(bookValue)
-	fmt.Println("Вы выбрали:", details[bookValue])
-	comparator := NewComparator(details[bookValue])
-	result := comparator.Compare
-	fmt.Println(result(p, p2))
+	userBook, userBook1 := Book{}, Book{}
+	fmt.Println("Вам нужно ввести данные по книге1 разделенные запятой, id, title, author, year, size, rate")
+	fmt.Scanf("%d, %s, %s, %d, %d, %d", &userBook.id, userBook.title, userBook.author, userBook.year, userBook.size, userBook.rate)
+	fmt.Println("Вам нужно ввести данные по книге2 разделенные запятой, id, title, author, year, size, rate")
+	fmt.Scanf("%d, %s, %s, %d, %d, %d", &userBook1.id, userBook1.title, userBook1.author, userBook1.year, userBook1.size, userBook1.rate)
+	fmt.Println(userBook)
+	// // p := newBook(1, "Война и мир", "Толстой", 2020, 500, 5.8)
+	// // p2 := newBook(2, "Сторожевая башня", "Стругадские", 2008, 300, 8)
+	// var bookValue uint8
+	// details := []FieldComapre{year, size, rate}
+	// for bookIndex, bookType := range details {
+	// 	fmt.Print("[", bookIndex, "] - ", bookType.String(), "\n")
+	// }
+	// fmt.Fscanln(os.Stdin, &bookValue)
+	// fmt.Println(bookValue)
+	// fmt.Println("Вы выбрали:", details[bookValue])
+	// comparator := NewComparator(details[bookValue])
+	// result := comparator.Compare
+	// fmt.Println(result(p, p2))
 }
