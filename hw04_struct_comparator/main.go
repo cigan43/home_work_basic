@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 )
 
 const (
@@ -44,17 +45,6 @@ type Book struct {
 	rate   float32
 }
 
-func newBook(id uint, title, author string, year, size int, rate float32) *Book {
-	return &Book{
-		id:     id,
-		title:  title,
-		author: author,
-		year:   year,
-		size:   size,
-		rate:   rate,
-	}
-}
-
 func (b *Book) SetRate(newrate float32) {
 	b.rate = newrate
 }
@@ -75,7 +65,7 @@ func (b *Book) SetAuthor(newauthor string) {
 	b.author = newauthor
 }
 
-func (b *Book) SetId(newid uint) {
+func (b *Book) SetID(newid uint) {
 	b.id = newid
 }
 
@@ -99,7 +89,7 @@ func (b *Book) GetAuthor() string {
 	return b.author
 }
 
-func (b *Book) GetId() uint {
+func (b *Book) GetID() uint {
 	return b.id
 }
 
@@ -115,24 +105,45 @@ func (s FieldComapre) String() string {
 	return "unknown"
 }
 
+func checkStruct(book Book) bool {
+	defaultBook := Book{}
+	return book == defaultBook
+}
+
 func main() {
+	var bookValue uint8
 	userBook, userBook1 := Book{}, Book{}
-	fmt.Println("Вам нужно ввести данные по книге1 разделенные запятой, id, title, author, year, size, rate")
-	fmt.Scanf("%d, %s, %s, %d, %d, %d", &userBook.id, userBook.title, userBook.author, userBook.year, userBook.size, userBook.rate)
-	fmt.Println("Вам нужно ввести данные по книге2 разделенные запятой, id, title, author, year, size, rate")
-	fmt.Scanf("%d, %s, %s, %d, %d, %d", &userBook1.id, userBook1.title, userBook1.author, userBook1.year, userBook1.size, userBook1.rate)
-	fmt.Println(userBook)
-	// // p := newBook(1, "Война и мир", "Толстой", 2020, 500, 5.8)
-	// // p2 := newBook(2, "Сторожевая башня", "Стругадские", 2008, 300, 8)
-	// var bookValue uint8
-	// details := []FieldComapre{year, size, rate}
-	// for bookIndex, bookType := range details {
-	// 	fmt.Print("[", bookIndex, "] - ", bookType.String(), "\n")
-	// }
-	// fmt.Fscanln(os.Stdin, &bookValue)
-	// fmt.Println(bookValue)
-	// fmt.Println("Вы выбрали:", details[bookValue])
-	// comparator := NewComparator(details[bookValue])
-	// result := comparator.Compare
-	// fmt.Println(result(p, p2))
+	fmt.Println("Вам нужно ввести данные по книге1 разделенные через пробел: id title author year size rate")
+	fmt.Scanf("%d %s %s %d %d %g",
+		&userBook.id, &userBook.title, &userBook.author, &userBook.year, &userBook.size, &userBook.rate)
+	fmt.Println("Вам нужно ввести данные по книге2 разделенные через пробел: id title author year size rate")
+	fmt.Scanf("%d %s %s %d %d %g",
+		&userBook1.id, &userBook1.title, &userBook1.author, &userBook1.year, &userBook1.size, &userBook1.rate)
+
+	if checkStruct(userBook) || checkStruct(userBook1) {
+		fmt.Println("Неправильно заполнили данные по книгам, берем значение по умолчанию")
+		userBook.SetID(1)
+		userBook.SetTitle("Война и мир")
+		userBook.SetAuthor("Толстой")
+		userBook.SetYear(2020)
+		userBook.SetSize(500)
+		userBook.SetRate(5.8)
+
+		userBook.SetID(2)
+		userBook.SetTitle("Сторожевая башня")
+		userBook.SetAuthor("Стругадские")
+		userBook.SetYear(2008)
+		userBook.SetSize(300)
+		userBook.SetRate(8)
+	}
+
+	details := []FieldComapre{year, size, rate}
+	for bookIndex, bookType := range details {
+		fmt.Print("[", bookIndex, "] - ", bookType.String(), "\n")
+	}
+	fmt.Fscanln(os.Stdin, &bookValue)
+	fmt.Println("Вы выбрали:", details[bookValue])
+	comparator := NewComparator(details[bookValue])
+	result := comparator.Compare
+	fmt.Println("Результат сравнения двух книг:", result(&userBook, &userBook1))
 }
