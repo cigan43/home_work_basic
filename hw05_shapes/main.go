@@ -61,7 +61,25 @@ func main() {
 	c := Circle{Radius: 33.0}
 	r := Rectangle{Width: 0, Height: 8}
 	t := Triangle{Base: 5, Height: 7}
-	fmt.Println(calculateArea(Shape(c)))
-	fmt.Println(calculateArea(Shape(r)))
-	fmt.Println(calculateArea(Shape(t)))
+
+	area_c, err := calculateArea(Shape(c))
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(area_c)
+	}
+
+	area_r, err := calculateArea(Shape(r))
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(area_r)
+	}
+
+	area_t, err := calculateArea(Shape(t))
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(area_t)
+	}
 }
