@@ -62,24 +62,24 @@ func main() {
 	r := Rectangle{Width: 0, Height: 8}
 	t := Triangle{Base: 5, Height: 7}
 
-	area_c, err := calculateArea(Shape(c))
+	areaC, err := calculateArea(Shape(c))
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Println(area_c)
+		fmt.Println(areaC)
 	}
 
-	area_r, err := calculateArea(Shape(r))
+	areaR, err := calculateArea(Shape(r))
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Println(area_r)
+		fmt.Println(areaR)
 	}
 
-	area_t, err := calculateArea(Shape(t))
+	areaT, err := calculateArea(Shape(t))
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Println(area_t)
+		fmt.Println(areaT)
 	}
 }
