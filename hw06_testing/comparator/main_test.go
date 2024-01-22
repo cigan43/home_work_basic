@@ -4,7 +4,11 @@ import "testing"
 
 func Test(t *testing.T) {
 	testCases := []struct {
-		desc string
+		desc    string
+		book1   Book
+		book2   Book
+		compare int
+		want    bool
 	}{
 		{
 			desc: "",
