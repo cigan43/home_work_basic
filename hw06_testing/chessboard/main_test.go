@@ -31,8 +31,8 @@ func Test(t *testing.T) {
 		},
 		{
 			desc:        "ErrorString",
-			countColumn: "34b",
-			firstStep:   1,
+			countColumn: 6,
+			firstStep:   2,
 			want:        "# # #",
 		},
 	}

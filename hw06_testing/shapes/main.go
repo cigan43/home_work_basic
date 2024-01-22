@@ -1,14 +1,45 @@
-package main
+package shapes
 
 import (
 	"errors"
 	"fmt"
-
-	"github.com/cigan43/home_work_basic/hw05_shapes/geometry"
+	"math"
 )
 
 type Shape interface {
 	Area() (float64, error)
+}
+type Rectangle struct {
+	Width, Height float64
+}
+
+type Circle struct {
+	Radius float64
+}
+
+type Triangle struct {
+	Height, Base float64
+}
+
+func (r Rectangle) Area() (float64, error) {
+	if r.Width <= 0 || r.Height <= 0 {
+		return 0.0, errors.New("rectangle.area неправильно введены параметры")
+	}
+	return r.Width * r.Height, nil
+}
+
+func (c Circle) Area() (float64, error) {
+	if c.Radius <= 0 {
+		return 0.0, errors.New("circle.area неправильно введены параметры")
+	}
+	return math.Pow(c.Radius, 2) * 3.14, nil
+}
+
+func (t Triangle) Area() (float64, error) {
+	if t.Base <= 0 || t.Height <= 0 {
+		return 0.0, errors.New("triangle.area неправильно введены параметры")
+	}
+	return 0.5 * t.Height * t.Base, nil
 }
 
 func calculateArea(s any) (float64, error) {
@@ -26,9 +57,9 @@ func calculateArea(s any) (float64, error) {
 
 func main() {
 	// Place your code here.
-	c := geometry.Circle{Radius: 33.0}
-	r := geometry.Rectangle{Width: 0, Height: 8}
-	t := geometry.Triangle{Base: 5, Height: 7}
+	c := Circle{Radius: 33.0}
+	r := Rectangle{Width: 0, Height: 8}
+	t := Triangle{Base: 5, Height: 7}
 
 	areaC, err := calculateArea(Shape(c))
 	if err != nil {
