@@ -2,7 +2,6 @@ package shapes
 
 import (
 	"errors"
-	"fmt"
 	"math"
 )
 
@@ -42,43 +41,43 @@ func (t Triangle) Area() (float64, error) {
 	return 0.5 * t.Height * t.Base, nil
 }
 
-func calculateArea(s any) (float64, error) {
-	shape, ok := s.(Shape)
-	if !ok {
-		return 0.0, errors.New("не интерфайс Shape")
-	}
+// func calculateArea(s any) (float64, error) {
+// 	shape, ok := s.(Shape)
+// 	if !ok {
+// 		return 0.0, errors.New("не интерфайс Shape")
+// 	}
 
-	area, err := shape.Area()
-	if err != nil {
-		return 0.0, fmt.Errorf("%w", err)
-	}
-	return area, nil
-}
+// 	area, err := shape.Area()
+// 	if err != nil {
+// 		return 0.0, fmt.Errorf("%w", err)
+// 	}
+// 	return area, nil
+// }
 
-func main() {
-	// Place your code here.
-	c := Circle{Radius: 33.0}
-	r := Rectangle{Width: 0, Height: 8}
-	t := Triangle{Base: 5, Height: 7}
+// func main() {
+// 	// Place your code here.
+// 	c := Circle{Radius: 33.0}
+// 	r := Rectangle{Width: 0, Height: 8}
+// 	t := Triangle{Base: 5, Height: 7}
 
-	areaC, err := calculateArea(Shape(c))
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(areaC)
-	}
+// 	areaC, err := calculateArea(Shape(c))
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	} else {
+// 		fmt.Println(areaC)
+// 	}
 
-	areaR, err := calculateArea(Shape(r))
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(areaR)
-	}
+// 	areaR, err := calculateArea(Shape(r))
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	} else {
+// 		fmt.Println(areaR)
+// 	}
 
-	areaT, err := calculateArea(Shape(t))
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(areaT)
-	}
-}
+// 	areaT, err := calculateArea(Shape(t))
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	} else {
+// 		fmt.Println(areaT)
+// 	}
+// }

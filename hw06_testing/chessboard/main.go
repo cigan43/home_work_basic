@@ -1,9 +1,5 @@
 package chessboard
 
-import (
-	"fmt"
-)
-
 const (
 	black = "#"
 	white = " "
@@ -30,13 +26,13 @@ func CreateString(countColumn int, firstStep int) string {
 	return readyString
 }
 
-func main() {
-	var row, column int
-	var board string
-	fmt.Scanf("%dx%d", &row, &column)
+// func main() {
+// 	var row, column int
+// 	var board string
+// 	fmt.Scanf("%dx%d", &row, &column)
 
-	for i := 0; row > i; i++ {
-		board += "\n" + CreateString(column, i)
-	}
-	fmt.Println(board)
-}
+// 	for i := 0; row > i; i++ {
+// 		board += "\n" + CreateString(column, i)
+// 	}
+// 	fmt.Println(board)
+// }

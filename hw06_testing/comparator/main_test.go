@@ -3,7 +3,6 @@ package comparator
 import (
 	"testing"
 
-	// "github.com/cigan43/home_work_basic/hw06_testing/comparator"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,7 +20,6 @@ func Test(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-
 			got := NewComparator(tC.compare)
 			result := got.Compare
 			assert.Equal(t, result(&tC.book1, &tC.book2), tC.want)

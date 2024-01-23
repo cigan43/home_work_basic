@@ -4,7 +4,6 @@ import (
 	"errors"
 	"testing"
 
-	// "github.com/cigan43/home_work_basic/hw06_testing/shapes"
 	"github.com/stretchr/testify/assert"
 )
 

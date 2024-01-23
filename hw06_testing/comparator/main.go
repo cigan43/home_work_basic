@@ -1,10 +1,5 @@
 package comparator
 
-import (
-	"fmt"
-	"os"
-)
-
 const (
 	year FieldComapre = iota
 	size
@@ -103,47 +98,4 @@ func (s FieldComapre) String() string {
 		return "year"
 	}
 	return "unknown"
-}
-
-func checkStruct(book Book) bool {
-	defaultBook := Book{}
-	return book == defaultBook
-}
-
-func main() {
-	var bookValue uint8
-	userBook, userBook1 := Book{}, Book{}
-	fmt.Println("Вам нужно ввести данные по книге1 разделенные через пробел: id title author year size rate")
-	fmt.Scanf("%d %s %s %d %d %g",
-		&userBook.id, &userBook.title, &userBook.author, &userBook.year, &userBook.size, &userBook.rate)
-	fmt.Println("Вам нужно ввести данные по книге2 разделенные через пробел: id title author year size rate")
-	fmt.Scanf("%d %s %s %d %d %g",
-		&userBook1.id, &userBook1.title, &userBook1.author, &userBook1.year, &userBook1.size, &userBook1.rate)
-
-	if checkStruct(userBook) || checkStruct(userBook1) {
-		fmt.Println("Неправильно заполнили данные по книгам, берем значение по умолчанию")
-		userBook.SetID(1)
-		userBook.SetTitle("Война и мир")
-		userBook.SetAuthor("Толстой")
-		userBook.SetYear(2020)
-		userBook.SetSize(500)
-		userBook.SetRate(5.8)
-
-		userBook.SetID(2)
-		userBook.SetTitle("Сторожевая башня")
-		userBook.SetAuthor("Стругадские")
-		userBook.SetYear(2008)
-		userBook.SetSize(300)
-		userBook.SetRate(8)
-	}
-
-	details := []FieldComapre{year, size, rate}
-	for bookIndex, bookType := range details {
-		fmt.Print("[", bookIndex, "] - ", bookType.String(), "\n")
-	}
-	fmt.Fscanln(os.Stdin, &bookValue)
-	fmt.Println("Вы выбрали:", details[bookValue])
-	comparator := NewComparator(details[bookValue])
-	result := comparator.Compare
-	fmt.Println("Результат сравнения двух книг:", result(&userBook, &userBook1))
 }
