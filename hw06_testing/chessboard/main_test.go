@@ -39,7 +39,7 @@ func Test(t *testing.T) {
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
 			got := CreateString(tC.countColumn, tC.firstStep)
-			assert.Equal(t, tC.want, got)
+			assert.Equal(t, got, tC.want)
 		})
 	}
 }
