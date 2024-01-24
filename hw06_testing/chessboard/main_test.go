@@ -2,8 +2,6 @@ package chessboard
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func Test(t *testing.T) {
@@ -24,22 +22,25 @@ func Test(t *testing.T) {
 			want:        " # # # # ",
 		},
 		{
-			desc:        "ErrorOneWhite",
+			desc:        "OneBlack1",
 			countColumn: 5,
-			firstStep:   1,
+			firstStep:   0,
 			want:        "# # #",
 		},
 		{
-			desc:        "ErrorString",
+			desc:        "OneWhite2",
 			countColumn: 6,
-			firstStep:   2,
-			want:        "# # #",
+			firstStep:   3,
+			want:        " # # #",
 		},
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
 			got := CreateString(tC.countColumn, tC.firstStep)
-			assert.Equal(t, got, tC.want)
+			// assert.Equal(t, tC.want, got)
+			if got != tC.want {
+				t.Errorf("got %s, want %s", got, tC.want)
+			}
 		})
 	}
 }
