@@ -1,5 +1,7 @@
 package chessboard
 
+import "errors"
+
 const (
 	black = "#"
 	white = " "
@@ -24,6 +26,18 @@ func CreateString(countColumn int, firstStep int) string {
 		}
 	}
 	return readyString
+}
+
+func ChessBoard(row, column int) (string, error) {
+	var board string
+	if column <= 0 || row <= 0 {
+		return "", errors.New(
+			"значение не может быть меньше или равно нулю")
+	}
+	for i := 0; row > i; i++ {
+		board += "\n" + CreateString(column, i)
+	}
+	return board, nil
 }
 
 // func main() {
