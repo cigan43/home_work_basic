@@ -2,6 +2,7 @@ package shapes
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -28,7 +29,50 @@ func TestArea(t *testing.T) {
 		t.Run(tC.desc, func(t *testing.T) {
 			got, err := tC.shape.Area()
 			if err != nil {
-				// t.Errorf("ERROR: %v", err)
+				assert.Equal(t, tC.er, err)
+			}
+			assert.Equal(t, tC.want, got)
+		})
+	}
+}
+
+func TestCalculateArea(t *testing.T) {
+	testCases := []struct {
+		desc  string
+		inter any
+		want  float64
+		er    error
+	}{
+		{
+			desc:  "Good circle",
+			inter: Shape(Circle{Radius: 33.0}),
+			want:  3419.46,
+			er:    nil,
+		},
+		{
+			desc:  "Good rectangle",
+			inter: Shape(Rectangle{Width: 5, Height: 8}),
+			want:  40.0,
+			er:    nil,
+		},
+		{
+			desc:  "Good triangle",
+			inter: Shape(Triangle{Base: 5, Height: 7}),
+			want:  17.5,
+			er:    nil,
+		},
+		{
+			desc:  "Error interface",
+			inter: []struct{ square float64 }{{10.0}},
+			want:  0.0,
+			er:    errors.New("не интерфайс Shape"),
+		},
+	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			got, err := CalculateArea(tC.inter)
+			if err != nil {
+				fmt.Println(err, got)
 				assert.Equal(t, tC.er, err)
 			}
 			assert.Equal(t, tC.want, got)
