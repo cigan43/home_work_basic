@@ -6,15 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const FilePath = "data.json"
-
 func TestReadJSON(t *testing.T) {
-
-	employee, err := ReadJSON(FilePath)
+	employee, err := ReadJSON("data.json")
 	assert.NoError(t, err, "нет ошибок в JSON")
-	assert.NotNil(t, employee, "Employees не должны быть nil")
+	assert.NotNil(t, employee, "Employees not nil")
 
-	Employee := Employee{UserID: 11, Age: 30, Name: "George", DepartmentID: 2}
-	assert.Equal(t, Employee, employee[0])
+	Emp := Employee{UserID: 10, Age: 25, Name: "Rob", DepartmentID: 3}
+	assert.Equal(t, Emp, employee[0])
 	//	}
 }
