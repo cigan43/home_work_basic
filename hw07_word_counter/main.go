@@ -44,6 +44,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(splitworld)
 	fmt.Println(countWorld(splitworld))
 }
