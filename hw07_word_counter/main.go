@@ -2,32 +2,48 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
 )
 
-func WordSplit(row string) []string {
+func countWorld(row []string) map[string]int {
+	wordDict := make(map[string]int)
+	for _, text := range row {
+		_, ok := wordDict[strings.ToLower(text)]
+		if !ok {
+			wordDict[strings.ToLower(text)] = 1
+			continue
+		}
+		wordDict[strings.ToLower(text)]++
+	}
+	return wordDict
+}
+
+func WordSplit(row string) ([]string, error) {
+	text := []string{}
+
+	if len(strings.TrimSpace(row)) == 0 {
+		return []string{""}, errors.New("передали пустую строку")
+	}
 
 	splitFunc := func(r rune) bool {
-		return strings.ContainsRune("*%,_!.' '", r)
+		return strings.ContainsRune("*%,_!.' ''\n'", r)
 	}
 
-	words := strings.FieldsFunc(text, splitFunc)
-	for idx, word := range words {
-		fmt.Printf("Word %d is: %s\n", idx, word)
-	}
-
+	words := strings.FieldsFunc(row, splitFunc)
+	text = append(text, words...)
+	return text, nil
 }
 
 func main() {
+	fmt.Println()
 	text, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-	splitFunc := func(r rune) bool {
-		return strings.ContainsRune("*%,_!.' '", r)
+	splitworld, err := WordSplit(text)
+	if err != nil {
+		panic(err)
 	}
-
-	words := strings.FieldsFunc(text, splitFunc)
-	for idx, word := range words {
-		fmt.Printf("Word %d is: %s\n", idx, word)
-	}
+	fmt.Println(splitworld)
+	fmt.Println(countWorld(splitworld))
 }
