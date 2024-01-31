@@ -38,7 +38,7 @@ func WordSplit(row string) ([]string, error) {
 }
 
 func main() {
-	fmt.Println()
+	fmt.Println("Введите текст")
 	text, _ := bufio.NewReader(os.Stdin).ReadString('\n')
 	splitworld, err := WordSplit(text)
 	if err != nil {
