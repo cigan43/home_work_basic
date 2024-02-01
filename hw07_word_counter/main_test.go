@@ -24,7 +24,7 @@ func TestWordSplit(t *testing.T) {
 			desc: "Error test",
 			row:  "",
 			er:   errors.New("передали пустую строку"),
-			want: []string{"nil"},
+			want: nil,
 		},
 	}
 	for _, tC := range testCases {
