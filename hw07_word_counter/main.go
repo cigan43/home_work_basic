@@ -20,7 +20,7 @@ func WordSplit(row string) ([]string, error) {
 	text := []string{}
 
 	if len(strings.TrimSpace(row)) == 0 {
-		return []string{""}, errors.New("передали пустую строку")
+		return nil, errors.New("передали пустую строку")
 	}
 
 	splitFunc := func(r rune) bool {
