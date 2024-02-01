@@ -11,11 +11,6 @@ import (
 func countWorld(row []string) map[string]int {
 	wordDict := make(map[string]int)
 	for _, text := range row {
-		_, ok := wordDict[strings.ToLower(text)]
-		if !ok {
-			wordDict[strings.ToLower(text)] = 1
-			continue
-		}
 		wordDict[strings.ToLower(text)]++
 	}
 	return wordDict
