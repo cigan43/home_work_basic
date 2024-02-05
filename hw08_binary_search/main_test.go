@@ -10,7 +10,7 @@ func TestSearch(t *testing.T) {
 		er   error
 	}{
 		{
-			desc: "",
+			desc: "Good",
 		},
 	}
 	for _, tC := range testCases {
