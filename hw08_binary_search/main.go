@@ -19,6 +19,8 @@ func search(min, max, searchItem int, sortSlice []int) (int, error) {
 	switch v := sortSlice[half]; {
 	case v == searchItem:
 		return half, nil
+	case half-1 == min || half+1 == max:
+		return 0, errors.New("ненаншли елемента в заданном массиве")
 	case v > searchItem:
 		return search(min, half, searchItem, sortSlice)
 	case v < searchItem:
@@ -28,20 +30,9 @@ func search(min, max, searchItem int, sortSlice []int) (int, error) {
 	}
 }
 
-// }
-// if sortSlice[half] == searchItem {
-// 	return half, nil
-// } else if sortSlice[half] > searchItem { // искомый элемент с лева
-// 	return search(min, half, searchItem, sortSlice)
-// } else if sortSlice[half] < searchItem { // искомый элемент с права
-// 	return search(half, max, searchItem, sortSlice)
-// }
-// return 0, errors.New("ненаншли елемента в заданном массиве")
-// }
-
 func main() {
 	a := []int{1, 2, 5, 7, 3, 4, 6, 9, 8}
-	searchIndex := 7
+	searchIndex := 999
 	s := sortSlice(a)
 	index, err := search(0, len(s), searchIndex, s)
 	if err != nil {
