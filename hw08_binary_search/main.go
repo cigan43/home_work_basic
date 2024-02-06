@@ -13,17 +13,31 @@ func sortSlice(ar []int) []int {
 	return ar
 }
 
-func search(min, max, search_item int, sort_slice []int) (int, error) {
+func search(min, max, searchItem int, sortSlice []int) (int, error) {
 	half := (max-min)/2 + min
-	if sort_slice[half] == search_item {
+
+	switch v := sortSlice[half]; {
+	case v == searchItem:
 		return half, nil
-	} else if sort_slice[half] > search_item { // искомый элемент с лева
-		return search(min, half, search_item, sort_slice)
-	} else if sort_slice[half] < search_item { // искомый элемент с права
-		return search(half, max, search_item, sort_slice)
+	case v > searchItem:
+		return search(min, half, searchItem, sortSlice)
+	case v < searchItem:
+		return search(half, max, searchItem, sortSlice)
+	default:
+		return 0, errors.New("ненаншли елемента в заданном массиве")
 	}
-	return 0, errors.New("ненаншли елемента в заданном массиве")
 }
+
+// }
+// if sortSlice[half] == searchItem {
+// 	return half, nil
+// } else if sortSlice[half] > searchItem { // искомый элемент с лева
+// 	return search(min, half, searchItem, sortSlice)
+// } else if sortSlice[half] < searchItem { // искомый элемент с права
+// 	return search(half, max, searchItem, sortSlice)
+// }
+// return 0, errors.New("ненаншли елемента в заданном массиве")
+// }
 
 func main() {
 	a := []int{1, 2, 5, 7, 3, 4, 6, 9, 8}
