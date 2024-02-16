@@ -35,11 +35,7 @@ func (b *Book) MarshalJSON() ([]byte, error) {
 }
 
 func (b *Book) UnmarshalJSON(bytes []byte) error {
-	err := json.Unmarshal(bytes, b)
-	if err != nil {
-		return err
-	}
-	return nil
+	return json.Unmarshal(bytes, b)
 }
 
 type Message interface {
