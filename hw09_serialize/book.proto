@@ -1,7 +1,7 @@
 syntax = "proto3";
 package main;
 
-import "github.com/cigan43/home_work_basic/hw09_serialize/book.proto";
+//import "github.com/cigan43/home_work_basic/blob/hw09_serialize/hw09_serialize/book.proto";
 option go_package = "github.com/protocolbuffers/protobuf/examples/go/tutorialpb";
 
 message Book{

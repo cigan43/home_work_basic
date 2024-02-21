@@ -1,6 +1,10 @@
 package main
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"google.golang.org/protobuf/proto"
+)
 
 // - Реализуйте структуру Book со следующими полями: ID, Title, Author, Year, Size, Rate (может быть дробным).
 // - Реализуйте для нее интерфейсы Marshaller и Unmarshaller  из пакета json.
@@ -38,7 +42,24 @@ func (b *Book) UnmarshalJSON(bytes []byte) error {
 	return json.Unmarshal(bytes, b)
 }
 
-type Message interface {
+type MessageUnmarshaler interface {
+	MessageUnmarshaler([]byte) error
+}
+
+type MessageMarshaler interface {
+	MessageMarshaler() ([]byte, error)
+}
+
+func (b *Book) MessageMarshaler() ([]byte, error) {
+	bookMarshal, err := proto.Marshal(b)
+	if err != nil {
+		return nil, err
+	}
+	return bookMarshal, nil
+}
+
+func (b *Book) UnmarshalJSON(bytes []byte) error {
+	return proto.Unmarshal(bytes, b)
 }
 
 func main() {
