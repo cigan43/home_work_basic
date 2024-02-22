@@ -39,7 +39,11 @@ func (b *Book) MarshalJSON() ([]byte, error) {
 }
 
 func (b *Book) UnmarshalJSON(bytes []byte) error {
-	return json.Unmarshal(bytes, b)
+	err := json.Unmarshal(bytes, b)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 type MessageUnmarshaler interface {
@@ -62,6 +66,16 @@ func (b *Book) UnmarshalJSON(bytes []byte) error {
 	return proto.Unmarshal(bytes, b)
 }
 
+func SliceBook(ss []Book)
+
 func main() {
-	// Place your code here.
+	myBook := &Book{
+		ID:     1,
+		Title:  "Pupkin",
+		Author: "Pup",
+		Year:   2000,
+		Size:   300,
+		Rate:   6.7,
+	}
+	a := myBook.MarshalJSON()
 }
