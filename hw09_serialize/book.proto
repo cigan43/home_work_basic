@@ -1,7 +1,6 @@
 syntax = "proto3";
 package main;
 
-//import "github.com/cigan43/home_work_basic/blob/hw09_serialize/hw09_serialize/book.proto";
 option go_package = "github.com/protocolbuffers/protobuf/examples/go/tutorialpb";
 
 message Book{
@@ -11,4 +10,8 @@ message Book{
     int32 year=4;
     int32 size=5;
     float rate=6;
+}
+
+message SliceBook{
+    repeated Book sections = 1;
 }
