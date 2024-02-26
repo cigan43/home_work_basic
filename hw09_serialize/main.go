@@ -3,7 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	// "google.golang.org/protobuf/proto"
+
+	"google.golang.org/protobuf/proto"
 )
 
 // - Реализуйте структуру Book со следующими полями: ID, Title, Author, Year, Size, Rate (может быть дробным).
@@ -23,61 +24,65 @@ type Book struct {
 }
 
 type Marshaller interface {
-	MarshalJSON() ([]byte, error)
+	Marshal() ([]byte, error)
 }
 
 type Unmarshaller interface {
-	UnmarshalJSON([]byte) error
+	Unmarshal([]byte) error
 }
 
-func (b *Book) MarshalJSON() ([]byte, error) {
-	fmt.Println(b)
+func (b *Book) Marshal() ([]byte, error) {
 	bookMarshal, err := json.Marshal(b)
-	fmt.Println(err, "-------")
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(bookMarshal, "+++")
 	return bookMarshal, nil
 }
 
-func (b *Book) UnmarshalJSON(bytes []byte) error {
-	err := json.Unmarshal(bytes, b)
-	if err != nil {
-		return err
-	}
-	return nil
+func (b *Book) Unmarshal(bytes []byte) error {
+	return json.Unmarshal(bytes, b)
 }
 
 // type MessageUnmarshaler interface {
 // 	MessageUnmarshaler([]byte) error
 // }
 
-// type MessageMarshaler interface {
-// 	MessageMarshaler() ([]byte, error)
-// }
+type MessageMarshaler interface {
+	MessageMarshaler() ([]byte, error)
+}
 
-// func (b *Book) MessageMarshaler() ([]byte, error) {
-// 	bookMarshal, err := proto.Marshal(b)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return bookMarshal, nil
-// }
+func (b Book) MessageMarshaler() ([]byte, error) {
+	bookMarshal, err := proto.Marshal(b)
+	if err != nil {
+		return nil, err
+	}
+	return bookMarshal, nil
+}
 
-// func (b *Book) UnmarshalJSON(bytes []byte) error {
+// func (b *Book) MessageUnmarshalJSON(bytes []byte) error {
 // 	return proto.Unmarshal(bytes, b)
 // }
 
 func SliceBookMarshel(ss []Book) []byte {
 	var bookbyte []byte
 	for i := range ss {
-		a, err := ss[i].MarshalJSON()
+		a, err := ss[i].Marshal()
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println(a)
-		// append(bookbyte, )
+		append(bookbyte, a...)
+	}
+	return bookbyte
+}
+
+func SliceBookMarshelProto(ss []Book) []byte {
+	var bookbyte []byte
+	for i := range ss {
+		a, err := ss[i].MessageMarshaler()
+		if err != nil {
+			fmt.Println(err)
+		}
+		append(bookbyte, a...)
 	}
 	return bookbyte
 }
@@ -113,6 +118,8 @@ func main() {
 	}
 
 	a := SliceBookMarshel(myBook)
+	a := SliceBookMarshelProto(myBook)
+	// WriteJson(a)
 	// a := SliceBookUnMarshel(myBook)
 	fmt.Println(a)
 	// proto.Message()
