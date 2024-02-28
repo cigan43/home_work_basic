@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/cigan43/home_work_basic/hw09_serialize/module"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -15,7 +16,7 @@ import (
 // - Напишите юнит тесты на реализованные функции;
 
 type Book struct {
-	ID     int64   `json:"id"`
+	Id     int32   `json:"id"`
 	Title  string  `json:"title"`
 	Author string  `json:"author"`
 	Year   int64   `json:"year"`
@@ -25,10 +26,12 @@ type Book struct {
 
 type Marshaller interface {
 	Marshal() ([]byte, error)
+	MessageMarshaler() ([]byte, error)
 }
 
 type Unmarshaller interface {
 	Unmarshal([]byte) error
+	MessageUnmarshal([]byte) error
 }
 
 func (b *Book) Marshal() ([]byte, error) {
@@ -37,6 +40,17 @@ func (b *Book) Marshal() ([]byte, error) {
 		return nil, err
 	}
 	return bookMarshal, nil
+}
+
+type Message interface {
+	String() string
+	ProtoReflect()
+	GetID() string
+	GetRate() float32
+	GetYear() uint32
+	GetSize() uint32
+	GetTitle() string
+	GetAuthor() string
 }
 
 func (b *Book) Unmarshal(bytes []byte) error {
@@ -51,7 +65,7 @@ type MessageMarshaler interface {
 	MessageMarshaler() ([]byte, error)
 }
 
-func (b Book) MessageMarshaler() ([]byte, error) {
+func (b *module.Book) MessageMarshaler() ([]byte, error) {
 	bookMarshal, err := proto.Marshal(b)
 	if err != nil {
 		return nil, err
@@ -59,9 +73,9 @@ func (b Book) MessageMarshaler() ([]byte, error) {
 	return bookMarshal, nil
 }
 
-// func (b *Book) MessageUnmarshalJSON(bytes []byte) error {
-// 	return proto.Unmarshal(bytes, b)
-// }
+func (b *module.Book) MessageUnmarshal(bytes []byte) error {
+	return proto.Unmarshal(bytes, b)
+}
 
 func SliceBookMarshel(ss []Book) []byte {
 	var bookbyte []byte
@@ -117,10 +131,29 @@ func main() {
 		},
 	}
 
+	myBookProto := []module.Book{
+		{
+			Id:     1,
+			Title:  "Pupkin",
+			Author: "Pup",
+			Year:   2000,
+			Size:   300,
+			Rate:   6.7,
+		},
+		{
+			Id:     2,
+			Title:  "Rfr",
+			Author: "kfd;sk",
+			Year:   200,
+			Size:   100,
+			Rate:   5.9,
+		},
+	}
 	a := SliceBookMarshel(myBook)
-	a := SliceBookMarshelProto(myBook)
+	aProto := SliceBookMarshelProto(myBookProto)
 	// WriteJson(a)
 	// a := SliceBookUnMarshel(myBook)
 	fmt.Println(a)
+	fmt.Println(aProto)
 	// proto.Message()
 }

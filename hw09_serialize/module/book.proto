@@ -1,7 +1,7 @@
 syntax = "proto3";
 package module;
 
-option go_package = "github.com/protocolbuffers/protobuf/examples/go/tutorialpb";
+option go_package = "github.com/cigan43/home_work_basic/hw09_serialize/module";
 
 message Book{
     int32 id=1;
