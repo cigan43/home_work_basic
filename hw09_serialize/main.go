@@ -54,7 +54,7 @@ type Message interface {
 	GetAuthor() string
 }
 
-type ProtoMessage interface {
+type ProtoMessage interface { ///зачем это надо я не понимаю
 	ProtoReflect() Message
 }
 
