@@ -14,9 +14,10 @@ import (
 // - Реализуйте для нее интерфейс Message из пакета proto.
 // - Напишите фукции выполняющие сериализацию/десериализацию слайса объектов.
 // - Напишите юнит тесты на реализованные функции;
+type ProtoBook module.Book
 
 type Book struct {
-	Id     int32   `json:"id"`
+	Id     int64   `json:"id"`
 	Title  string  `json:"title"`
 	Author string  `json:"author"`
 	Year   int64   `json:"year"`
@@ -53,6 +54,10 @@ type Message interface {
 	GetAuthor() string
 }
 
+type ProtoMessage interface {
+	ProtoReflect() Message
+}
+
 func (b *Book) Unmarshal(bytes []byte) error {
 	return json.Unmarshal(bytes, b)
 }
@@ -65,7 +70,7 @@ type MessageMarshaler interface {
 	MessageMarshaler() ([]byte, error)
 }
 
-func (b *module.Book) MessageMarshaler() ([]byte, error) {
+func (b *ProtoBook) MessageMarshaler() ([]byte, error) {
 	bookMarshal, err := proto.Marshal(b)
 	if err != nil {
 		return nil, err
@@ -73,7 +78,7 @@ func (b *module.Book) MessageMarshaler() ([]byte, error) {
 	return bookMarshal, nil
 }
 
-func (b *module.Book) MessageUnmarshal(bytes []byte) error {
+func (b *ProtoBook) MessageUnmarshal(bytes []byte) error {
 	return proto.Unmarshal(bytes, b)
 }
 
@@ -89,7 +94,7 @@ func SliceBookMarshel(ss []Book) []byte {
 	return bookbyte
 }
 
-func SliceBookMarshelProto(ss []Book) []byte {
+func SliceBookMarshelProto(ss []module.Book) []byte {
 	var bookbyte []byte
 	for i := range ss {
 		a, err := ss[i].MessageMarshaler()
@@ -114,7 +119,7 @@ func SliceBookMarshelProto(ss []Book) []byte {
 func main() {
 	myBook := []Book{
 		{
-			ID:     1,
+			Id:     1,
 			Title:  "Pupkin",
 			Author: "Pup",
 			Year:   2000,
@@ -122,7 +127,7 @@ func main() {
 			Rate:   6.7,
 		},
 		{
-			ID:     2,
+			Id:     2,
 			Title:  "Rfr",
 			Author: "kfd;sk",
 			Year:   200,
