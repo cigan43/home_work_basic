@@ -35,5 +35,9 @@ func aVg(in <-chan int) <-chan int {
 }
 
 func main() {
+	out := make(chan float32)
 	go genData()
+	go aVg(out)
+
+	for 
 }
