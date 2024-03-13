@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -10,34 +11,43 @@ import (
 // - Главная горутина будет получать обработанные данные из канала и выводить их на экран.
 // - Напишите юнит тесты на реализованные функции;
 
-func genData() <-chan int {
-	gChannel := make(chan int)
+func genData(gChannel chan int) {
+	t := time.Now()
 	for {
+		if time.Since(t).Seconds() == 60 {
+			break
+		}
 		gChannel <- rand.Intn(1000)
-		time.Sleep(60 * time.Second)
-		close(gChannel)
+		// time.Sleep(60 * time.Second)
 	}
+	close(gChannel)
+
 }
 
-func aVg(in <-chan int) <-chan int {
-	out := make(chan float32)
+func aVg(inChan <-chan int, outChan chan float32) {
 	var data, count int
-	for i := range in {
+	for i := range inChan {
+		fmt.Println(i, data, count)
 		if count == 10 {
-			out <- float32(data) / 10
+			outChan <- float32(data) / 10
 			data = 0
 			count = 0
 		} else {
 			data += i
+			count += 1
 		}
-		close(out)
+		// close(outChan)
 	}
 }
 
 func main() {
-	out := make(chan float32)
-	go genData()
-	go aVg(out)
+	gChan := make(chan int)
+	counted := make(chan float32)
+	go genData(gChan)
+	go aVg(gChan, counted)
 
-	for 
+	for b := range counted {
+		fmt.Println(b)
+	}
+
 }
