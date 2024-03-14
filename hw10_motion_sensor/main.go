@@ -14,11 +14,11 @@ import (
 func genData(gChannel chan int) {
 	t := time.Now()
 	for {
-		if time.Since(t).Seconds() == 60 {
+		// fmt.Println(time.Since(t).Seconds(), "--------")
+		if time.Since(t).Seconds() > 60.0 {
 			break
 		}
 		gChannel <- rand.Intn(1000)
-		// time.Sleep(60 * time.Second)
 	}
 	close(gChannel)
 
@@ -27,7 +27,6 @@ func genData(gChannel chan int) {
 func aVg(inChan <-chan int, outChan chan float32) {
 	var data, count int
 	for i := range inChan {
-		fmt.Println(i, data, count)
 		if count == 10 {
 			outChan <- float32(data) / 10
 			data = 0
@@ -36,8 +35,9 @@ func aVg(inChan <-chan int, outChan chan float32) {
 			data += i
 			count += 1
 		}
-		// close(outChan)
 	}
+	close(outChan)
+
 }
 
 func main() {
@@ -47,7 +47,7 @@ func main() {
 	go aVg(gChan, counted)
 
 	for b := range counted {
-		fmt.Println(b)
+		fmt.Println(b, "!!!!!!!")
 	}
 
 }
