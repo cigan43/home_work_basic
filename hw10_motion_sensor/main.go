@@ -26,13 +26,12 @@ func genData(gChannel chan int, limit int64) {
 func aVg(inChan <-chan int, outChan chan float32) {
 	var data, count int
 	for i := range inChan {
+		data += i
+		count++
 		if count > 10 {
 			outChan <- float32(data) / 10
 			data = 0
 			count = 0
-		} else {
-			data += i
-			count++
 		}
 	}
 	close(outChan)
