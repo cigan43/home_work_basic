@@ -16,7 +16,7 @@ func genData(gChannel chan int, limit int64) {
 		}
 		intRand, err := rand.Int(rand.Reader, bInt)
 		if err != nil {
-			return
+			break
 		}
 		gChannel <- int(intRand.Int64())
 	}
