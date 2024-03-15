@@ -9,11 +9,12 @@ import (
 
 func genData(gChannel chan int, limit int64) {
 	t := time.Now()
+	bInt := big.NewInt(limit)
 	for {
 		if time.Since(t).Seconds() > 60.0 {
 			break
 		}
-		intRand, err := rand.Int(rand.Reader, big.NewInt(limit))
+		intRand, err := rand.Int(rand.Reader, bInt)
 		if err != nil {
 			return
 		}
@@ -25,7 +26,7 @@ func genData(gChannel chan int, limit int64) {
 func aVg(inChan <-chan int, outChan chan float32) {
 	var data, count int
 	for i := range inChan {
-		if count == 10 {
+		if count > 10 {
 			outChan <- float32(data) / 10
 			data = 0
 			count = 0

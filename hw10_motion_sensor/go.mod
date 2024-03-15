@@ -1,4 +1,4 @@
-module github.com/fixme_my_friend/hw10_motion_sensor
+module github.com/cigan43/home_work_basic/hw10_motion_sensor
 
 go 1.20
 
