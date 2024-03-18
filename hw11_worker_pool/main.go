@@ -21,7 +21,7 @@ func (c *Counter) Inc() {
 	c.Lock()
 	defer c.Unlock()
 
-	c.num += 1
+	c.num++
 }
 
 func (c *Counter) Value() int {
@@ -37,10 +37,8 @@ func main() {
 
 	go Do(cnt, finish)
 
-	select {
-	case <-finish:
-		log.Printf("Work done with count: %d", cnt.Value())
-	}
+	<-finish
+	log.Printf("Work done with count: %d", cnt.Value())
 }
 
 func Do(cnt *Counter, finish chan struct{}) {

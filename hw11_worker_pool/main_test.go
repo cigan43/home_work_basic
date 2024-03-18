@@ -9,13 +9,13 @@ import (
 func TestDo(t *testing.T) {
 	testCases := []struct {
 		desc string
-		cnt  Counter
+		cnt  *Counter
 		// finish chan struct{}
 		want int
 	}{
 		{
 			desc: "Good",
-			cnt:  Counter{num: 0},
+			cnt:  &Counter{num: 0},
 			// finish: make(chan struct{}),
 			want: 20,
 		},
@@ -23,12 +23,9 @@ func TestDo(t *testing.T) {
 	finish := make(chan struct{})
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			go Do(&tC.cnt, finish)
-			select {
-			case <-finish:
-				assert.Equal(t, tC.want, tC.cnt.Value())
-			}
+			go Do(tC.cnt, finish)
+			<-finish
+			assert.Equal(t, tC.want, tC.cnt.Value())
 		})
 	}
-
 }
