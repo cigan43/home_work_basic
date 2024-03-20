@@ -1,7 +1,10 @@
 package main
 
 import (
-	"github.com/labstack/gommon/log"
+	//"github.com/labstack/gommon/log"
+	"fmt"
+	"os"
+
 	"github.com/spf13/pflag"
 )
 
@@ -25,9 +28,9 @@ import (
 // Напишите юнит тесты на реализованные функции;
 
 type appConfig struct {
-	Host      string `cfg_name:"host" cfg_desc:"Server host"`
-	Port      int    `cfg_name:"port" cfg_desc:"Server port"`
-	SearchAPI string `cfg_name:"apis.search" cfg_desc:"Search API endpoint"`
+	File   string
+	Level  string
+	Output string
 }
 
 // func config()
@@ -37,6 +40,33 @@ var (
 	logAnalyzerOutput string
 	showHelp          bool
 )
+
+func (cfg *appConfig) ConfigFile(value string) {
+	switch value {
+	case "":
+		cfg.File = os.Getenv("LOG_ANALYZER_FILE")
+	default:
+		cfg.File = value
+	}
+}
+
+func (cfg *appConfig) ConfigLevel(value string) {
+	switch value {
+	case "":
+		cfg.File = os.Getenv("LOG_ANALYZER_LEVEL")
+	default:
+		cfg.File = value
+	}
+}
+
+func (cfg *appConfig) ConfigOutput(value string) {
+	switch value {
+	case "":
+		cfg.File = os.Getenv("LOG_ANALYZER_OUTPUT")
+	default:
+		cfg.File = value
+	}
+}
 
 func main() {
 	pflag.StringVarP(&logAnalyzerFile, "file", "i", "",
@@ -53,5 +83,10 @@ func main() {
 		return
 	}
 
-	log.Infof("configPath == %s", logAnalyzerFile)
+	// log.Infof("configPath == %s", logAnalyzerFile)
+	fmt.Println(logAnalyzerFile)
+	c := appConfig{}
+	c.ConfigFile(logAnalyzerFile)
+	c.ConfigLevel(logAnalyzerLevel)
+	c.ConfigOutput(logAnalyzerOutput)
 }
