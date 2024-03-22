@@ -83,7 +83,6 @@ func main() {
 		return
 	}
 
-	// log.Infof("configPath == %s", logAnalyzerFile)
 	fmt.Println(logAnalyzerFile)
 	c := appConfig{}
 	c.ConfigFile(logAnalyzerFile)
