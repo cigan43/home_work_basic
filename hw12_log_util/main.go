@@ -2,7 +2,9 @@ package main
 
 import (
 	//"github.com/labstack/gommon/log"
+	"bufio"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/spf13/pflag"
@@ -50,7 +52,7 @@ func (cfg *appConfig) ConfigFile(value string) {
 	}
 }
 
-func (cfg *appConfig) ConfigLevel(value string) {
+func (cfg *appConfig) ConfigLevel(value string) s {
 	switch value {
 	case "":
 		cfg.File = os.Getenv("LOG_ANALYZER_LEVEL")
@@ -65,6 +67,25 @@ func (cfg *appConfig) ConfigOutput(value string) {
 		cfg.File = os.Getenv("LOG_ANALYZER_OUTPUT")
 	default:
 		cfg.File = value
+	}
+}
+
+func ReadFile(logfile string) {
+	fmt.Println(logfile)
+	file, err := os.Open(logfile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	// optionally, resize scanner's capacity for lines over 64K, see next example
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -88,4 +109,6 @@ func main() {
 	c.ConfigFile(logAnalyzerFile)
 	c.ConfigLevel(logAnalyzerLevel)
 	c.ConfigOutput(logAnalyzerOutput)
+	fmt.Println(c.File)
+	ReadFile(c.File)
 }
