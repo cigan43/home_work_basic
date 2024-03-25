@@ -44,15 +44,15 @@ var (
 )
 
 func (cfg *appConfig) ConfigFile(value string) {
-	switch value {
-	case "":
+	switch {
+	case value == "":
 		cfg.File = os.Getenv("LOG_ANALYZER_FILE")
 	default:
 		cfg.File = value
 	}
 }
 
-func (cfg *appConfig) ConfigLevel(value string) s {
+func (cfg *appConfig) ConfigLevel(value string) {
 	switch value {
 	case "":
 		cfg.File = os.Getenv("LOG_ANALYZER_LEVEL")
@@ -71,7 +71,7 @@ func (cfg *appConfig) ConfigOutput(value string) {
 }
 
 func ReadFile(logfile string) {
-	fmt.Println(logfile)
+	// fmt.Println(logfile)
 	file, err := os.Open(logfile)
 	if err != nil {
 		log.Fatal(err)
@@ -104,11 +104,24 @@ func main() {
 		return
 	}
 
-	fmt.Println(logAnalyzerFile)
+	// fmt.Println(logAnalyzerFile)
 	c := appConfig{}
 	c.ConfigFile(logAnalyzerFile)
 	c.ConfigLevel(logAnalyzerLevel)
 	c.ConfigOutput(logAnalyzerOutput)
-	fmt.Println(c.File)
-	ReadFile(c.File)
+	fmt.Print(c.File)
+	// if c.File == "" {
+	// 	panic("not log file")
+	// }
+
+	// if c.Level == "" {
+	// 	c.Level = "info"
+	// }
+
+	// if c.Output == "" {
+	// 	c.Output = "logout/"
+	// }
+
+	// fmt.Println(c.File)
+	// ReadFile(c.File)
 }
