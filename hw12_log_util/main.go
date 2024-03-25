@@ -35,15 +35,8 @@ type appConfig struct {
 	Output string
 }
 
-// func config()
-var (
-	logAnalyzerFile   string
-	logAnalyzerLevel  string
-	logAnalyzerOutput string
-	showHelp          bool
-)
-
 func (cfg *appConfig) ConfigFile(value string) {
+	// fmt.Println(value)
 	switch {
 	case value == "":
 		cfg.File = os.Getenv("LOG_ANALYZER_FILE")
@@ -55,18 +48,18 @@ func (cfg *appConfig) ConfigFile(value string) {
 func (cfg *appConfig) ConfigLevel(value string) {
 	switch value {
 	case "":
-		cfg.File = os.Getenv("LOG_ANALYZER_LEVEL")
+		cfg.Level = os.Getenv("LOG_ANALYZER_LEVEL")
 	default:
-		cfg.File = value
+		cfg.Level = value
 	}
 }
 
 func (cfg *appConfig) ConfigOutput(value string) {
 	switch value {
 	case "":
-		cfg.File = os.Getenv("LOG_ANALYZER_OUTPUT")
+		cfg.Output = os.Getenv("LOG_ANALYZER_OUTPUT")
 	default:
-		cfg.File = value
+		cfg.Output = value
 	}
 }
 
@@ -90,6 +83,13 @@ func ReadFile(logfile string) {
 }
 
 func main() {
+	var (
+		logAnalyzerFile   string
+		logAnalyzerLevel  string
+		logAnalyzerOutput string
+		showHelp          bool
+	)
+
 	pflag.StringVarP(&logAnalyzerFile, "file", "i", "",
 		"Input file")
 	pflag.StringVarP(&logAnalyzerLevel, "level", "l", "",
@@ -104,24 +104,23 @@ func main() {
 		return
 	}
 
-	// fmt.Println(logAnalyzerFile)
 	c := appConfig{}
 	c.ConfigFile(logAnalyzerFile)
 	c.ConfigLevel(logAnalyzerLevel)
 	c.ConfigOutput(logAnalyzerOutput)
-	fmt.Print(c.File)
-	// if c.File == "" {
-	// 	panic("not log file")
-	// }
 
-	// if c.Level == "" {
-	// 	c.Level = "info"
-	// }
+	if c.File == "" {
+		panic("not log file")
+	}
 
-	// if c.Output == "" {
-	// 	c.Output = "logout/"
-	// }
+	if c.Level == "" {
+		c.Level = "info"
+	}
 
-	// fmt.Println(c.File)
-	// ReadFile(c.File)
+	if c.Output == "" {
+		c.Output = "logout/"
+	}
+
+	fmt.Println(c.File)
+	ReadFile(c.File)
 }
