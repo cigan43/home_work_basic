@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/spf13/pflag"
 )
@@ -33,6 +34,11 @@ type appConfig struct {
 	File   string
 	Level  string
 	Output string
+}
+
+type status struct {
+	ip     string
+	status int32
 }
 
 func (cfg *appConfig) ConfigFile(value string) {
@@ -63,7 +69,7 @@ func (cfg *appConfig) ConfigOutput(value string) {
 	}
 }
 
-func ReadFile(logfile string) {
+func ReadFile(logfile string) (back []string) {
 	// fmt.Println(logfile)
 	file, err := os.Open(logfile)
 	if err != nil {
@@ -73,8 +79,10 @@ func ReadFile(logfile string) {
 
 	scanner := bufio.NewScanner(file)
 	// optionally, resize scanner's capacity for lines over 64K, see next example
+	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		fmt.Println(strings.Split(scanner.Text(), " "))
+		return strings.Split(scanner.Text(), " ")
 	}
 
 	if err := scanner.Err(); err != nil {
