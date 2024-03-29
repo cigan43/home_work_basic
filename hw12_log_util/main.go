@@ -102,18 +102,43 @@ func clearstring(st string) string {
 	return strings.ReplaceAll(st, "\"", "")
 }
 
-// func clearlog(stringlog string) []string {
-// 	struc := &status{}
-// 	slicelog = []status{}
-// 	for s := range stringlog {
-// 		struc.ip = strings.Split(stringlog[s], " ")[0]
-// 		struc.method = strings.Split(stringlog[s], " ")[5]
-// 		// struc.status = strings.Split(strings.Split(str[s], " ")[8], "\"")[1]
-// 		struc.status = strings.Split(stringlog[s], " ")[8]
-// 		struc.engine = strings.Split(stringlog[s], " ")[11]
-// 		fmt.Println(struc)
-// 	}
-// }
+func sort(sl []status) map[string]map[string]int64 {
+	m := make(map[string]map[string]int64)
+	m["ip"] = make(map[string]int64)
+	m["method"] = make(map[string]int64)
+	m["status"] = make(map[string]int64)
+	m["engine"] = make(map[string]int64)
+	for s := range sl {
+		_, ok := m["ip"][sl[s].ip]
+		if ok == true {
+			m["ip"][sl[s].ip]++
+		} else {
+			m["ip"][sl[s].ip] = 1
+		}
+		_, ok_method := m["method"][sl[s].method]
+
+		if ok_method == true {
+			m["method"][sl[s].method]++
+		} else {
+			m["method"][sl[s].method] = 1
+		}
+		_, ok_engine := m["engine"][sl[s].engine]
+		if ok_engine == true {
+			m["engine"][sl[s].engine]++
+		} else {
+			m["engine"][sl[s].engine] = 1
+		}
+
+		_, ok_status := m["status"][sl[s].status]
+		if ok_status == true {
+			m["status"][sl[s].status]++
+		} else {
+			m["status"][sl[s].status] = 1
+		}
+
+	}
+	return m
+}
 
 func main() {
 	var (
@@ -153,16 +178,23 @@ func main() {
 	if c.Output == "" {
 		c.Output = "logout/"
 	}
-	struc := &status{}
-	m := []status{}
+
+	var st []status
+	struc := status{}
 	stringlog, err := ReadFile(c.File)
 	if err != nil {
 		fmt.Println(err)
 	}
 	for s := range stringlog {
-		struc.Add(strings.Split(stringlog[s], " ")[0], strings.Split(stringlog[s], " ")[5], strings.Split(stringlog[s], " ")[8], strings.Split(stringlog[s], " ")[11])
-		m = append(m, struc)
+		struc.Add(strings.Split(stringlog[s], " ")[0],
+			strings.Split(stringlog[s], " ")[5],
+			strings.Split(stringlog[s], " ")[8],
+			strings.Split(stringlog[s], " ")[11])
+		st = append(st, struc)
 	}
-
-	fmt.Println(struc)
+	rr := sort(st)
+	fmt.Println(rr)
+	// for r := range rr["ip"] {
+	// 	fmt.Println(r, rr["ip"][r])
+	// }
 }
