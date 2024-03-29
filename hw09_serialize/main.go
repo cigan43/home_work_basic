@@ -6,6 +6,7 @@ import (
 
 	"github.com/cigan43/home_work_basic/hw09_serialize/module"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // - Реализуйте структуру Book со следующими полями: ID, Title, Author, Year, Size, Rate (может быть дробным).
@@ -45,17 +46,13 @@ func (b *Book) Marshal() ([]byte, error) {
 
 type Message interface {
 	String() string
-	ProtoReflect()
+	ProtoReflect() protoreflect.Message
 	GetID() string
 	GetRate() float32
 	GetYear() uint32
 	GetSize() uint32
 	GetTitle() string
 	GetAuthor() string
-}
-
-type ProtoMessage interface { ///зачем это надо я не понимаю
-	ProtoReflect() Message
 }
 
 func (b *Book) Unmarshal(bytes []byte) error {
@@ -71,7 +68,7 @@ type MessageMarshaler interface {
 }
 
 func (b *ProtoBook) MessageMarshaler() ([]byte, error) {
-	bookMarshal, err := proto.Marshal(b)
+	bookMarshal, err := proto.Marshal(Message.ProtoReflect(b))ы
 	if err != nil {
 		return nil, err
 	}
