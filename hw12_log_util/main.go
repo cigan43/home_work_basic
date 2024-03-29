@@ -38,7 +38,9 @@ type appConfig struct {
 
 type status struct {
 	ip     string
-	status int32
+	status string
+	method string
+	engine string
 }
 
 func (cfg *appConfig) ConfigFile(value string) {
@@ -69,26 +71,49 @@ func (cfg *appConfig) ConfigOutput(value string) {
 	}
 }
 
-func ReadFile(logfile string) (back []string) {
-	// fmt.Println(logfile)
+func ReadFile(logfile string) ([]string, error) {
+	words := []string{}
 	file, err := os.Open(logfile)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
-
 	scanner := bufio.NewScanner(file)
-	// optionally, resize scanner's capacity for lines over 64K, see next example
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
-		fmt.Println(strings.Split(scanner.Text(), " "))
-		return strings.Split(scanner.Text(), " ")
+		words = append(words, scanner.Text())
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
+		return nil, err
 	}
+	return words, nil
 }
+
+func (s *status) Add(ip, method, status, engine string) {
+	s.ip = ip
+	s.method = clearstring(method)
+	s.status = status
+	s.engine = clearstring(engine)
+}
+
+func clearstring(st string) string {
+	return strings.ReplaceAll(st, "\"", "")
+}
+
+// func clearlog(stringlog string) []string {
+// 	struc := &status{}
+// 	slicelog = []status{}
+// 	for s := range stringlog {
+// 		struc.ip = strings.Split(stringlog[s], " ")[0]
+// 		struc.method = strings.Split(stringlog[s], " ")[5]
+// 		// struc.status = strings.Split(strings.Split(str[s], " ")[8], "\"")[1]
+// 		struc.status = strings.Split(stringlog[s], " ")[8]
+// 		struc.engine = strings.Split(stringlog[s], " ")[11]
+// 		fmt.Println(struc)
+// 	}
+// }
 
 func main() {
 	var (
@@ -128,7 +153,16 @@ func main() {
 	if c.Output == "" {
 		c.Output = "logout/"
 	}
+	struc := &status{}
+	m := []status{}
+	stringlog, err := ReadFile(c.File)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for s := range stringlog {
+		struc.Add(strings.Split(stringlog[s], " ")[0], strings.Split(stringlog[s], " ")[5], strings.Split(stringlog[s], " ")[8], strings.Split(stringlog[s], " ")[11])
+		m = append(m, struc)
+	}
 
-	fmt.Println(c.File)
-	ReadFile(c.File)
+	fmt.Println(struc)
 }
