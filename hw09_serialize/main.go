@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/cigan43/home_work_basic/hw09_serialize/module"
-	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/reflect/protoreflect"
+	"github.com/cigan43/home_work_basic/hw09_serialize/book"
 )
 
 // - Реализуйте структуру Book со следующими полями: ID, Title, Author, Year, Size, Rate (может быть дробным).
@@ -15,7 +13,7 @@ import (
 // - Реализуйте для нее интерфейс Message из пакета proto.
 // - Напишите фукции выполняющие сериализацию/десериализацию слайса объектов.
 // - Напишите юнит тесты на реализованные функции;
-type ProtoBook module.Book
+type ProtoBook book.Book
 
 type Book struct {
 	Id     int64   `json:"id"`
@@ -45,30 +43,15 @@ func (b *Book) Marshal() ([]byte, error) {
 }
 
 type Message interface {
-	String() string
-	ProtoReflect() protoreflect.Message
-	GetID() string
-	GetRate() float32
-	GetYear() uint32
-	GetSize() uint32
-	GetTitle() string
-	GetAuthor() string
+	bookMessage() *ProtoBook
 }
 
 func (b *Book) Unmarshal(bytes []byte) error {
 	return json.Unmarshal(bytes, b)
 }
 
-// type MessageUnmarshaler interface {
-// 	MessageUnmarshaler([]byte) error
-// }
-
-type MessageMarshaler interface {
-	MessageMarshaler() ([]byte, error)
-}
-
 func (b *ProtoBook) MessageMarshaler() ([]byte, error) {
-	bookMarshal, err := proto.Marshal(Message.ProtoReflect(b))ы
+	bookMarshal, err := json.Marshal(b)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +59,7 @@ func (b *ProtoBook) MessageMarshaler() ([]byte, error) {
 }
 
 func (b *ProtoBook) MessageUnmarshal(bytes []byte) error {
-	return proto.Unmarshal(bytes, b)
+	return
 }
 
 func SliceBookMarshel(ss []Book) []byte {
