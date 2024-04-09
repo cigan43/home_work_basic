@@ -179,21 +179,23 @@ func main() {
 		c.Output = "logout/"
 	}
 
-	var st []status
-	struc := status{}
+	// var st []status
+	// struc := status{}
 	stringlog, err := ReadFile(c.File)
 	if err != nil {
 		fmt.Println(err)
 	}
 	for s := range stringlog {
-		struc.Add(strings.Split(stringlog[s], " ")[0],
-			strings.Split(stringlog[s], " ")[5],
-			strings.Split(stringlog[s], " ")[8],
-			strings.Split(stringlog[s], " ")[11])
-		st = append(st, struc)
+		fmt.Println(stringlog[s])
+		// fmt.Println(strings.Split(stringlog[s], " "))
+		// struc.Add(strings.Split(stringlog[s], " ")[0],
+		// strings.Split(stringlog[s], " ")[5],
+		// strings.Split(stringlog[s], " ")[8],
+		// strings.Split(stringlog[s], " ")[11])
+		// st == append(st, struc)
 	}
-	rr := sort(st)
-	fmt.Println(rr)
+	// rr := sort(st)
+	// fmt.Println(rr)
 	// for r := range rr["ip"] {
 	// 	fmt.Println(r, rr["ip"][r])
 	// }
