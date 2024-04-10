@@ -38,8 +38,9 @@ type appConfig struct {
 
 type status struct {
 	ip     string
-	status string
+	level  string
 	method string
+	code   string
 	engine string
 }
 
@@ -91,49 +92,53 @@ func ReadFile(logfile string) ([]string, error) {
 	return words, nil
 }
 
-func (s *status) Add(ip, method, status, engine string) {
+func (s *status) Add(ip, level, method, code, engine string) {
 	s.ip = ip
-	s.method = clearstring(method)
-	s.status = status
-	s.engine = clearstring(engine)
+	s.level = level
+	s.method = method
+	s.code = code
+	s.engine = engine
 }
 
-func clearstring(st string) string {
-	return strings.ReplaceAll(st, "\"", "")
-}
+// func clearstring(st string) string {
+// 	return strings.ReplaceAll(st, "\"", "")
+// }
 
-func sort(sl []status) map[string]map[string]int64 {
+func sort(sl []status, level string) map[string]map[string]int64 {
 	m := make(map[string]map[string]int64)
 	m["ip"] = make(map[string]int64)
 	m["method"] = make(map[string]int64)
-	m["status"] = make(map[string]int64)
+	m["code"] = make(map[string]int64)
 	m["engine"] = make(map[string]int64)
 	for s := range sl {
+		if sl[s].level != strings.ToUpper(level) {
+			continue
+		}
 		_, ok := m["ip"][sl[s].ip]
-		if ok == true {
+		if ok {
 			m["ip"][sl[s].ip]++
 		} else {
 			m["ip"][sl[s].ip] = 1
 		}
 		_, ok_method := m["method"][sl[s].method]
 
-		if ok_method == true {
+		if ok_method {
 			m["method"][sl[s].method]++
 		} else {
 			m["method"][sl[s].method] = 1
 		}
 		_, ok_engine := m["engine"][sl[s].engine]
-		if ok_engine == true {
+		if ok_engine {
 			m["engine"][sl[s].engine]++
 		} else {
 			m["engine"][sl[s].engine] = 1
 		}
 
-		_, ok_status := m["status"][sl[s].status]
-		if ok_status == true {
-			m["status"][sl[s].status]++
+		_, ok_status := m["code"][sl[s].code]
+		if ok_status {
+			m["code"][sl[s].code]++
 		} else {
-			m["status"][sl[s].status] = 1
+			m["code"][sl[s].code] = 1
 		}
 
 	}
@@ -151,7 +156,7 @@ func main() {
 	pflag.StringVarP(&logAnalyzerFile, "file", "i", "",
 		"Input file")
 	pflag.StringVarP(&logAnalyzerLevel, "level", "l", "",
-		"log level")
+		"log level: DEBUG, INFO, ERROR")
 	pflag.StringVarP(&logAnalyzerOutput, "output", "o", "",
 		"Out file")
 	pflag.BoolVarP(&showHelp, "help", "h", false,
@@ -179,23 +184,26 @@ func main() {
 		c.Output = "logout/"
 	}
 
-	// var st []status
-	// struc := status{}
+	var st []status
+	struc := status{}
 	stringlog, err := ReadFile(c.File)
 	if err != nil {
 		fmt.Println(err)
 	}
 	for s := range stringlog {
-		fmt.Println(stringlog[s])
-		// fmt.Println(strings.Split(stringlog[s], " "))
-		// struc.Add(strings.Split(stringlog[s], " ")[0],
-		// strings.Split(stringlog[s], " ")[5],
-		// strings.Split(stringlog[s], " ")[8],
-		// strings.Split(stringlog[s], " ")[11])
-		// st == append(st, struc)
+		// fmt.Println(stringlog[s])
+		splitstring := strings.Fields(stringlog[s])
+		ip := splitstring[0]
+		level := splitstring[1]
+		method := splitstring[4]
+		code := splitstring[5]
+		engine := splitstring[6]
+
+		struc.Add(ip, level, method, code, engine)
+		st = append(st, struc)
 	}
-	// rr := sort(st)
-	// fmt.Println(rr)
+	rr := sort(st, c.Level)
+	fmt.Println(rr)
 	// for r := range rr["ip"] {
 	// 	fmt.Println(r, rr["ip"][r])
 	// }
