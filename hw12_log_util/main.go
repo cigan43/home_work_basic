@@ -1,34 +1,13 @@
 package main
 
 import (
-	//"github.com/labstack/gommon/log"
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
 	"github.com/spf13/pflag"
 )
-
-// Вы разрабатываете командную утилиту для анализа лог-файлов. Утилита должна принимать на вход путь к лог-файлу, анализировать его содержимое и выводить статистику по различным параметрам логов.
-
-// Требования:
-
-// Утилита должна поддерживать следующие флаги командной строки:
-
-// -file <путь_к_лог_файлу>: указывает путь к анализируемому лог-файлу (обязательный флаг).
-// -level <уровень_логов>: указывает уровень логов для анализа (необязательный флаг, значение по умолчанию - ""info"").
-// -output <путь_к_файлу>: указывает путь к файлу, в который будет записана статистика (необязательный флаг, если не указан, статистика выводится в стандартный поток вывода).
-// Утилита должна обрабатывать переменные окружения:
-
-// LOG_ANALYZER_FILE: путь к анализируемому лог-файлу (если не указан через флаг -file).
-// LOG_ANALYZER_LEVEL: уровень логов для анализа (если не указан через флаг -level).
-// LOG_ANALYZER_OUTPUT: путь к файлу для записи статистики (если не указан через флаг -output).
-// Утилита должна анализировать лог-файл и собирать статистику по указанному уровню логов (или по уровню по умолчанию). Формат и содержание статистики определяйте на свое усмотрение.
-
-// Утилита должна выводить статистику либо в указанный файл (если указан флаг -output), либо в стандартный поток вывода.
-// Напишите юнит тесты на реализованные функции;
 
 type appConfig struct {
 	File   string
@@ -76,18 +55,13 @@ func ReadFile(logfile string) ([]string, error) {
 	words := []string{}
 	file, err := os.Open(logfile)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
 		words = append(words, scanner.Text())
-	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-		return nil, err
 	}
 	return words, nil
 }
@@ -120,29 +94,46 @@ func sort(sl []status, level string) map[string]map[string]int64 {
 		} else {
 			m["ip"][sl[s].ip] = 1
 		}
-		_, ok_method := m["method"][sl[s].method]
+		_, okmethod := m["method"][sl[s].method]
 
-		if ok_method {
+		if okmethod {
 			m["method"][sl[s].method]++
 		} else {
 			m["method"][sl[s].method] = 1
 		}
-		_, ok_engine := m["engine"][sl[s].engine]
-		if ok_engine {
+		_, okengine := m["engine"][sl[s].engine]
+		if okengine {
 			m["engine"][sl[s].engine]++
 		} else {
 			m["engine"][sl[s].engine] = 1
 		}
 
-		_, ok_status := m["code"][sl[s].code]
-		if ok_status {
+		_, okstatus := m["code"][sl[s].code]
+		if okstatus {
 			m["code"][sl[s].code]++
 		} else {
 			m["code"][sl[s].code] = 1
 		}
-
 	}
 	return m
+}
+
+func writeFile(input map[string]map[string]int64, pathfile string) error {
+	file, err := os.Create(pathfile)
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+	for k, v := range input {
+		for kk, vv := range v {
+			_, err := file.WriteString(fmt.Sprintf("[%s][%s][%d]\n", k, kk, vv))
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 func main() {
@@ -180,11 +171,8 @@ func main() {
 		c.Level = "info"
 	}
 
-	if c.Output == "" {
-		c.Output = "logout/"
-	}
-
 	var st []status
+	// st := make([]status, 0, len(stringlog))
 	struc := status{}
 	stringlog, err := ReadFile(c.File)
 	if err != nil {
@@ -203,8 +191,13 @@ func main() {
 		st = append(st, struc)
 	}
 	rr := sort(st, c.Level)
-	fmt.Println(rr)
-	// for r := range rr["ip"] {
-	// 	fmt.Println(r, rr["ip"][r])
-	// }
+	if c.Output == "" {
+		for k, v := range rr {
+			for kk, vv := range v {
+				fmt.Println(k, kk, vv)
+			}
+		}
+	} else {
+		writeFile(rr, c.Output)
+	}
 }
