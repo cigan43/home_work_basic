@@ -74,10 +74,6 @@ func (s *status) Add(ip, level, method, code, engine string) {
 	s.engine = engine
 }
 
-// func clearstring(st string) string {
-// 	return strings.ReplaceAll(st, "\"", "")
-// }
-
 func sort(sl []status, level string) map[string]map[string]int64 {
 	m := make(map[string]map[string]int64)
 	m["ip"] = make(map[string]int64)
