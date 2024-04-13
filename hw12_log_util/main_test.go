@@ -27,7 +27,8 @@ func TestSort(t *testing.T) {
 				"ip":     {"66.249.73.135": 1},
 				"method": {"POST": 1},
 				"code":   {"500": 1},
-				"engine": {"Mozilla/5.0": 1}},
+				"engine": {"Mozilla/5.0": 1},
+			},
 		},
 	}
 	for _, tC := range testCases {
