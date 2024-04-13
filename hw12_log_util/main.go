@@ -127,8 +127,8 @@ func writeFile(input map[string]map[string]int64, pathfile string) error {
 	defer file.Close()
 	for k, v := range input {
 		for kk, vv := range v {
-			_, err := file.WriteString(fmt.Sprintf("[%s][%s][%d]\n", k, kk, vv))
-			if err != nil {
+			_, err1 := file.WriteString(fmt.Sprintf("[%s][%s][%d]\n", k, kk, vv))
+			if err1 != nil {
 				return err
 			}
 		}
@@ -171,10 +171,10 @@ func main() {
 		c.Level = "info"
 	}
 
-	var st []status
-	// st := make([]status, 0, len(stringlog))
+	// var st []status
 	struc := status{}
 	stringlog, err := ReadFile(c.File)
+	st := make([]status, 0, len(stringlog))
 	if err != nil {
 		fmt.Println(err)
 	}
