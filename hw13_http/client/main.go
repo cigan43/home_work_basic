@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"server"
 )
 
-func clientPost() error {
-	user := &User{
+func clientPost(url string) error {
+	user := &server.User{
 		Name:     "John",
 		LastName: "Pup",
 		Age:      30,
@@ -21,7 +22,7 @@ func clientPost() error {
 		return err
 	}
 
-	resp, err := http.Post("http://localhost:8080/", "application/json", b)
+	resp, err := http.Post(url, "application/json", b)
 	if err != nil {
 		return err
 	}

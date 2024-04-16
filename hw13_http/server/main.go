@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"encoding/json"
@@ -6,6 +6,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/spf13/pflag"
 )
 
 type User struct {
@@ -14,17 +16,64 @@ type User struct {
 	Age      int64
 }
 
+type Server struct {
+	Address string
+	Port    int64
+}
+
+func (cfg *Server) ConfigAddress(value string) {
+	// fmt.Println(value)
+	switch {
+	case value == "":
+		cfg.Address = "0.0.0.0"
+	default:
+		cfg.Address = value
+	}
+}
+
+func (cfg *Server) ConfigPort(value int64) {
+	// fmt.Println(value)
+	switch {
+	case value == 0:
+		cfg.Port = 8000
+	default:
+		cfg.Port = value
+	}
+}
+
 func main() {
+	var (
+		address  string
+		port     int64
+		showHelp bool
+	)
+
+	pflag.StringVarP(&address, "address", "a", "",
+		"address run server")
+	pflag.Int64VarP(&port, "port", "p", 0,
+		"port run server")
+	pflag.BoolVarP(&showHelp, "help", "h", false,
+		"Show help message")
+	pflag.Parse()
+	if showHelp {
+		pflag.Usage()
+		return
+	}
+
+	c := Server{}
+	c.ConfigAddress(address)
+	c.ConfigPort(port)
+
 	http.HandleFunc("/post", handlerPost)
 	http.HandleFunc("/get", handlerGet)
-	if err := http.ListenAndServe("0.0.0.0:8000", nil); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf("%s:%d", c.Address, c.Port), nil); err != nil {
 		log.Fatalln("error listen server")
 	}
 }
 
 func handlerPost(w http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodPost {
-		// w.Write([]byte("Hellooooooo"))
+		fmt.Println(req)
 		user := &User{}
 		err := json.NewDecoder(req.Body).Decode(user)
 		if err != nil {
@@ -32,6 +81,8 @@ func handlerPost(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		fmt.Println(user)
+		// w.WriteHeader(http.StatusInternalServerError)
+		// w.WriteHeader(http.StatusForbidden)
 	}
 }
 
@@ -42,13 +93,9 @@ func handlerGet(w http.ResponseWriter, req *http.Request) {
 			LastName: "Pup",
 			Age:      30,
 		}
-		// b := new(bytes.Buffer)
-		// err := json.NewEncoder(b).Encode(user)
-		// if err != nil{
-		// 	return
-		// }
+		fmt.Println(req)
 		io.WriteString(w, "name: "+user.Name)
-		io.WriteString(w, "\n lastname: "+user.LastName)
-		io.WriteString(w, "\n age:"+string(user.Age))
+		io.WriteString(w, "\nlastname: "+user.LastName)
+		io.WriteString(w, "\nage:"+fmt.Sprintf("%d", user.Age))
 	}
 }
