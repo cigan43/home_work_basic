@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"encoding/json"
@@ -72,6 +72,7 @@ func main() {
 }
 
 func handlerPost(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("*****")
 	if req.Method == http.MethodPost {
 		fmt.Println(req)
 		user := &User{}

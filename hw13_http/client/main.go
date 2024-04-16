@@ -5,15 +5,42 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
-	"server"
+
+	"github.com/spf13/pflag"
 )
 
-func clientPost(url string) error {
-	user := &server.User{
-		Name:     "John",
-		LastName: "Pup",
-		Age:      30,
+type Config struct {
+	address string
+	url     string
+}
+
+func (cfg *Config) ConfigAddress(value string) {
+	// fmt.Println(value)
+	switch {
+	case value == "":
+		cfg.address = "127.0.0.1:8000"
+	default:
+		cfg.address = value
+	}
+}
+
+func (cfg *Config) ConfigUrl(value string) {
+	cfg.url = value
+}
+
+func clientPost(address, url string) error {
+	user := []struct {
+		Name     string
+		LastName string
+		Age      int64
+	}{
+		{
+			Name:     "John",
+			LastName: "Pup",
+			Age:      30,
+		},
 	}
 
 	b := new(bytes.Buffer)
@@ -21,8 +48,9 @@ func clientPost(url string) error {
 	if err != nil {
 		return err
 	}
-
-	resp, err := http.Post(url, "application/json", b)
+	fmt.Println(address, url, b)
+	resp, err := http.Post(fmt.Sprintf("%s/%s", address, url), "application/json", b)
+	fmt.Println((resp))
 	if err != nil {
 		return err
 	}
@@ -32,8 +60,8 @@ func clientPost(url string) error {
 	return nil
 }
 
-func main() {
-	resp, err := http.Get("127.0.0.1:8000/")
+func clentGet(address, url string) {
+	resp, err := http.Get(fmt.Sprintf("%s/%s", address, url))
 	if err != nil {
 		fmt.Println("Ошибка Запроса", err)
 	}
@@ -43,4 +71,36 @@ func main() {
 		fmt.Println("ошибка чтения тела ответа", err)
 	}
 	fmt.Println(string(body))
+}
+
+func main() {
+	var (
+		address  string
+		url      string
+		showHelp bool
+	)
+
+	pflag.StringVarP(&address, "address", "a", "",
+		"address ip:port")
+	pflag.StringVarP(&url, "url", "u", "",
+		"url:  'post' or 'get'")
+	pflag.BoolVarP(&showHelp, "help", "h", false,
+		"Show help message")
+	pflag.Parse()
+	if showHelp {
+		pflag.Usage()
+		return
+	}
+
+	c := Config{}
+	c.ConfigAddress(address)
+	c.ConfigUrl(url)
+
+	if c.url == "post" {
+		clientPost(c.address, c.url)
+	} else if c.url == "get" {
+		clentGet(c.address, c.url)
+	} else {
+		log.Fatal("url empty")
+	}
 }
