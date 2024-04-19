@@ -25,21 +25,18 @@ func (cfg *Config) ConfigAddress(value string) {
 	}
 }
 
-func (cfg *Config) ConfigUrl(value string) {
+func (cfg *Config) ConfigURL(value string) {
 	cfg.url = value
 }
 
 func clientPost(address, url string) error {
-
-	var jsonStr = []byte(`{"Name":"John", "LastName": "Pup", "Age":30}`)
+	jsonStr := []byte(`{"Name":"John", "LastName": "Pup", "Age":30}`)
 	resp, err := http.Post(fmt.Sprintf("http://%s/%s", address, url), "application/json", bytes.NewBuffer(jsonStr))
 	fmt.Println((resp))
 	if err != nil {
 		return err
-
 	}
 	defer resp.Body.Close()
-
 	fmt.Println(resp.Status)
 	return nil
 }
@@ -78,13 +75,14 @@ func main() {
 
 	c := Config{}
 	c.ConfigAddress(address)
-	c.ConfigUrl(url)
+	c.ConfigURL(url)
 
-	if c.url == "post" {
+	switch c.url {
+	case "post":
 		clientPost(c.address, c.url)
-	} else if c.url == "get" {
+	case "get":
 		clientGet(c.address, c.url)
-	} else {
+	default:
 		log.Fatal("url empty")
 	}
 }
