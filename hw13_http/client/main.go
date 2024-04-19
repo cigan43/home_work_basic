@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -31,28 +30,13 @@ func (cfg *Config) ConfigUrl(value string) {
 }
 
 func clientPost(address, url string) error {
-	user := []struct {
-		Name     string
-		LastName string
-		Age      int64
-	}{
-		{
-			Name:     "John",
-			LastName: "Pup",
-			Age:      30,
-		},
-	}
 
-	b := new(bytes.Buffer)
-	err := json.NewEncoder(b).Encode(user)
-	if err != nil {
-		return err
-	}
-	fmt.Println(address, url, b)
-	resp, err := http.Post(fmt.Sprintf("%s/%s", address, url), "application/json", b)
+	var jsonStr = []byte(`{"Name":"John", "LastName": "Pup", "Age":30}`)
+	resp, err := http.Post(fmt.Sprintf("http://%s/%s", address, url), "application/json", bytes.NewBuffer(jsonStr))
 	fmt.Println((resp))
 	if err != nil {
 		return err
+
 	}
 	defer resp.Body.Close()
 
@@ -60,8 +44,8 @@ func clientPost(address, url string) error {
 	return nil
 }
 
-func clentGet(address, url string) {
-	resp, err := http.Get(fmt.Sprintf("%s/%s", address, url))
+func clientGet(address, url string) {
+	resp, err := http.Get(fmt.Sprintf("http://%s/%s", address, url))
 	if err != nil {
 		fmt.Println("Ошибка Запроса", err)
 	}
@@ -99,7 +83,7 @@ func main() {
 	if c.url == "post" {
 		clientPost(c.address, c.url)
 	} else if c.url == "get" {
-		clentGet(c.address, c.url)
+		clientGet(c.address, c.url)
 	} else {
 		log.Fatal("url empty")
 	}

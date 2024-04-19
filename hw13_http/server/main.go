@@ -72,9 +72,7 @@ func main() {
 }
 
 func handlerPost(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("*****")
 	if req.Method == http.MethodPost {
-		fmt.Println(req)
 		user := &User{}
 		err := json.NewDecoder(req.Body).Decode(user)
 		if err != nil {
@@ -82,8 +80,6 @@ func handlerPost(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		fmt.Println(user)
-		// w.WriteHeader(http.StatusInternalServerError)
-		// w.WriteHeader(http.StatusForbidden)
 	}
 }
 
