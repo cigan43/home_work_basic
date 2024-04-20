@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
+	"time"
 
 	"github.com/spf13/pflag"
 )
@@ -63,11 +63,18 @@ func main() {
 	c := Server{}
 	c.ConfigAddress(address)
 	c.ConfigPort(port)
-
-	http.HandleFunc("/post", handlerPost)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/post", handlerPost)
+	mux.HandleFunc("/get", handlerGet)
+	srv := http.Server{
+		Addr:              fmt.Sprintf("%s:%d", c.Address, c.Port),
+		WriteTimeout:      1 * time.Second,
+		Handler:           mux,
+		ReadHeaderTimeout: 1 * time.Second,
+	}
 	http.HandleFunc("/get", handlerGet)
-	if err := http.ListenAndServe(fmt.Sprintf("%s:%d", c.Address, c.Port), nil); err != nil {
-		log.Fatalln("error listen server")
+	if err := srv.ListenAndServe(); err != nil {
+		fmt.Printf("Server failed: %s\n", err)
 	}
 }
 

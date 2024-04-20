@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"log"
@@ -31,27 +32,50 @@ func (cfg *Config) ConfigURL(value string) {
 
 func clientPost(address, url string) error {
 	jsonStr := []byte(`{"Name":"John", "LastName": "Pup", "Age":30}`)
-	resp, err := http.Post(fmt.Sprintf("http://%s/%s", address, url), "application/json", bytes.NewBuffer(jsonStr))
-	fmt.Println((resp))
+	ctx := context.Background()
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
+		fmt.Sprintf("http://%s/%s", address, url), bytes.NewBuffer(jsonStr))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-Custom-Header", "myvalue")
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
-	fmt.Println(resp.Status)
+
+	fmt.Println("response Status:", resp.Status)
+	fmt.Println("response Headers:", resp.Header)
 	return nil
 }
 
-func clientGet(address, url string) {
-	resp, err := http.Get(fmt.Sprintf("http://%s/%s", address, url))
+func clientGet(address, url string) error {
+	ctx := context.Background()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet,
+		fmt.Sprintf("http://%s/%s", address, url), nil)
 	if err != nil {
-		fmt.Println("Ошибка Запроса", err)
+		return err
+	}
+	req.Header.Set("X-Custom-Header", "myvalue")
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
 	}
 	defer resp.Body.Close()
+
+	fmt.Println("response Status:", resp.Status)
+	fmt.Println("response Headers:", resp.Header)
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("ошибка чтения тела ответа", err)
 	}
 	fmt.Println(string(body))
+	return nil
 }
 
 func main() {
@@ -76,7 +100,6 @@ func main() {
 	c := Config{}
 	c.ConfigAddress(address)
 	c.ConfigURL(url)
-
 	switch c.url {
 	case "post":
 		clientPost(c.address, c.url)
