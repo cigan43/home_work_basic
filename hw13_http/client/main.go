@@ -30,41 +30,20 @@ func (cfg *Config) ConfigURL(value string) {
 	cfg.url = value
 }
 
-func clientPost(address, url string, data []byte) error {
+func clientPost(address, url string, data []byte) (string, error) {
 	// jsonStr := []byte(`{"Name":"John", "LastName": "Pup", "Age":30}`)
 	ctx := context.Background()
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
 		fmt.Sprintf("http://%s/%s", address, url), bytes.NewBuffer(data))
 	if err != nil {
-		return err
+		return "", err
 	}
 	req.Header.Set("X-Custom-Header", "myvalue")
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
-	return nil
-}
-
-func clientGet(address, url string) error {
-	ctx := context.Background()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet,
-		fmt.Sprintf("http://%s/%s", address, url), nil)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-Custom-Header", "myvalue")
-	req.Header.Set("Content-Type", "application/json")
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
+		return "", err
 	}
 	defer resp.Body.Close()
 
@@ -75,7 +54,33 @@ func clientGet(address, url string) error {
 		fmt.Println("ошибка чтения тела ответа", err)
 	}
 	fmt.Println(string(body))
-	return nil
+	return resp.Status, nil
+}
+
+func clientGet(address, url string) (string, error) {
+	ctx := context.Background()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet,
+		fmt.Sprintf("http://%s/%s", address, url), nil)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("X-Custom-Header", "myvalue")
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	fmt.Println("response Status:", resp.Status)
+	fmt.Println("response Headers:", resp.Header)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("ошибка чтения тела ответа", err)
+	}
+	fmt.Println(string(body))
+	return resp.Status, nil
 }
 
 func main() {
@@ -104,9 +109,15 @@ func main() {
 	switch c.url {
 	case "post":
 		jsonStr := []byte(`{"Name":"John", "LastName": "Pup", "Age":30}`)
-		clientPost(c.address, c.url, jsonStr)
+		_, err := clientPost(c.address, c.url, jsonStr)
+		if err != nil {
+			fmt.Println(err)
+		}
 	case "get":
-		clientGet(c.address, c.url)
+		_, err := clientGet(c.address, c.url)
+		if err != nil {
+			fmt.Println(err)
+		}
 	default:
 		log.Fatal("url empty")
 	}
