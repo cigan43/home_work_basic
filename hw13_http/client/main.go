@@ -30,11 +30,11 @@ func (cfg *Config) ConfigURL(value string) {
 	cfg.url = value
 }
 
-func clientPost(address, url string) error {
-	jsonStr := []byte(`{"Name":"John", "LastName": "Pup", "Age":30}`)
+func clientPost(address, url string, data []byte) error {
+	// jsonStr := []byte(`{"Name":"John", "LastName": "Pup", "Age":30}`)
 	ctx := context.Background()
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
-		fmt.Sprintf("http://%s/%s", address, url), bytes.NewBuffer(jsonStr))
+		fmt.Sprintf("http://%s/%s", address, url), bytes.NewBuffer(data))
 	if err != nil {
 		return err
 	}
@@ -100,9 +100,11 @@ func main() {
 	c := Config{}
 	c.ConfigAddress(address)
 	c.ConfigURL(url)
+
 	switch c.url {
 	case "post":
-		clientPost(c.address, c.url)
+		jsonStr := []byte(`{"Name":"John", "LastName": "Pup", "Age":30}`)
+		clientPost(c.address, c.url, jsonStr)
 	case "get":
 		clientGet(c.address, c.url)
 	default:
