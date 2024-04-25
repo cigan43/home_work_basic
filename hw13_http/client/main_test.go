@@ -19,13 +19,13 @@ func Test(t *testing.T) {
 			Address: "127.0.0.1:8000",
 			URL:     "post",
 			Data:    []byte(`{"Name":"John", "LastName": "Pup", "Age":30}`),
-			want:    "200 ok",
+			want:    "200 OK",
 		},
 		{
 			desc:    "get",
 			Address: "127.0.0.1:8000",
 			URL:     "get",
-			want:    "200 ok",
+			want:    "200 OK",
 		},
 	}
 	for _, tC := range testCases {
