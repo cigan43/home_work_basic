@@ -79,8 +79,9 @@ func clientGet(address, url string) (string, error) {
 	if err != nil {
 		fmt.Println("ошибка чтения тела ответа", err)
 	}
-	fmt.Println(string(body))
-	return resp.Status, nil
+	fmt.Println(string(body), "!!!!!!!")
+	return resp.Header[][], nil
+	// return string(body), nil
 }
 
 func main() {
