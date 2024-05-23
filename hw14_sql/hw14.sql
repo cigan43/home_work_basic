@@ -70,3 +70,12 @@ insert into Orders (user_id, order_date, total_amount)
                 (1, "2024-06-17", 5000);
 
 delete from Orders where id=1;
+
+
+select * from users u where name = 'alex2';
+select * from products p where name='Riva64';
+
+select o.id, o. from orders o
+	left join users u on o.user_id = u.id where u.name = 'alex';
+
+INSERT INTO orderproducts (order_id, product_id) VALUES (currval(pg_get_serial_sequence('orders', 'id')), 3);

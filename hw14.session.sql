@@ -28,3 +28,8 @@ insert into Orders (user_id, order_date, total_amount)
         values (2, '2024-05-18', 20000)
                 (1, "2024-06-17", 5000);
 
+delete from Orders where id=1;
+
+SELECT id from users
+INNER JOIN products pr on users.id = 
+
